@@ -1,0 +1,45 @@
+:root{--casco:#101a24;--piso:#172633;--painel:#213646;--texto:#e6edf2;--ambar:#f0a43a;--ciano:#4fc3d9;--verde:#5fd3a8;--vermelho:#e0543f}
+*{box-sizing:border-box}
+[hidden]{display:none!important}
+body{margin:0;min-height:100vh;background:var(--casco);color:var(--texto);font-family:"Trebuchet MS","Segoe UI",sans-serif;display:flex;flex-direction:column;align-items:center;padding:12px}
+button{font:inherit;background:var(--ciano);color:#07222b;border:0;border-radius:6px;padding:8px 14px;cursor:pointer}
+button:hover{filter:brightness(1.1)}
+button:focus-visible,input:focus-visible{outline:3px solid var(--ambar);outline-offset:2px}
+
+#hud{display:flex;justify-content:space-between;width:900px;max-width:100%;font-size:1.3rem;margin-bottom:8px}
+#tempo{font-weight:bold;font-variant-numeric:tabular-nums}
+#tempo.critico{color:var(--vermelho)}
+#nave{position:relative;width:900px;height:500px;background:var(--piso);border:4px solid var(--painel);border-radius:40px;overflow:hidden}
+.sala{position:absolute;background:var(--painel);border:3px solid var(--ambar);border-radius:8px;padding:8px;display:flex;flex-direction:column;gap:4px}
+.sala small{opacity:.85}
+.sala.aberta{border-color:var(--ciano)}
+.sala.consertada{border-color:var(--verde);background:#1f4a45}
+.porta{position:absolute;left:50%;bottom:-6px;width:44px;height:10px;margin-left:-22px;background:var(--ambar);border-radius:3px}
+.aberta .porta{background:var(--ciano)}
+.consertada .porta{background:var(--verde)}
+.ctrl .porta{top:-6px;bottom:auto}
+#jogador{position:absolute;left:0;top:0;width:22px;height:22px;border-radius:50% 50% 6px 6px;background:var(--verde);border:3px solid #fff}
+
+#dica{position:fixed;bottom:20px;left:50%;transform:translateX(-50%);background:var(--ambar);font-size:1.1rem}
+#aviso{position:fixed;top:70px;left:50%;transform:translateX(-50%);background:var(--painel);border:2px solid var(--ambar);padding:10px 18px;border-radius:8px;z-index:5}
+#modal,.tela{position:fixed;inset:0;background:rgba(8,14,20,.92);display:flex;align-items:center;justify-content:center;z-index:10}
+.tela{flex-direction:column;text-align:center;gap:12px;padding:20px;z-index:20}
+.tela ul{text-align:left;max-width:420px}
+.caixa{background:var(--painel);border-radius:12px;padding:24px;width:min(560px,94vw);max-height:92vh;overflow:auto}
+.expr{font-size:2rem;text-align:center;margin:12px 0}
+.opcoes,.grade,.painel,.fios{display:flex;gap:10px;flex-wrap:wrap;justify-content:center;margin:12px 0}
+.grade button{width:56px;height:56px;font-size:1.3rem}
+.feito{background:var(--verde)!important}
+#mf.ok{color:var(--verde)}
+#mf.erro{color:var(--vermelho)}
+
+.tanque{width:120px;height:180px;border:3px solid var(--texto);border-radius:8px;margin:0 auto;position:relative;overflow:hidden}
+#nivel{position:absolute;bottom:0;width:100%;background:var(--ambar);transition:height .2s}
+.fios>div{display:flex;flex-direction:column;gap:14px}
+.fio{width:90px;height:22px;border-radius:11px;cursor:grab}
+.conector{width:90px;height:22px;border:4px solid;border-radius:6px}
+.painel input{writing-mode:vertical-lr;direction:rtl;height:150px}
+
+.explode{animation:boom 1.5s forwards}
+@keyframes boom{0%{transform:none}20%{transform:translate(8px,-5px)}40%{transform:translate(-8px,5px)}60%{background:#fff}100%{background:var(--vermelho);opacity:.3;transform:scale(1.1)}}
+@media(prefers-reduced-motion:reduce){.explode{animation:none;opacity:.3}}

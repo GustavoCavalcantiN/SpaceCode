@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Pane na Aurora</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div id="hud" hidden><span id="tempo">06:00</span><span id="prog">Sistemas reparados: 0/4</span></div>
+<div id="nave" hidden></div>
+<button id="dica" hidden>Interagir (E)</button>
+<div id="aviso" hidden></div>
+
+<div id="modal" hidden>
+  <div class="caixa">
+    <h2 id="mt"></h2><p id="mi"></p>
+    <div id="mc"></div><p id="mf"></p>
+    <button id="fechar">Fechar e voltar à nave</button>
+  </div>
+</div>
+
+<div id="inicio" class="tela">
+  <h1>Pane na Aurora</h1>
+  <p>A nave Aurora saiu da rota. Conserte os 4 sistemas em 6 minutos antes que ela exploda.</p>
+  <ul>
+    <li>Mova-se com as setas ou WASD.</li>
+    <li>Perto de uma porta, aperte E ou clique em Interagir.</li>
+    <li>Resolva o desafio lógico para abrir a porta e depois faça o reparo.</li>
+    <li>Com os 4 sistemas consertados, vá à sala de controle.</li>
+  </ul>
+  <button id="jogar">Jogar</button>
+</div>
+
+<div id="fim" class="tela" hidden>
+  <h1 id="ft"></h1><p id="fp"></p>
+  <button id="denovo">Jogar de novo</button>
+</div>
+
+<script src="desafios.js"></script>
+<script src="tarefas.js"></script>
+<script src="main.js"></script>
+</body>
+</html>
