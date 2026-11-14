@@ -8,7 +8,7 @@
 </head>
 <body>
 <div id="hud" hidden><span id="tempo">06:00</span><span id="prog">Sistemas reparados: 0/4</span></div>
-<div id="nave" hidden></div>
+<div id="nave" hidden><div id="mapa"></div></div>
 <button id="dica" hidden>Interagir (E)</button>
 <div id="aviso" hidden></div>
 
@@ -21,15 +21,17 @@
 </div>
 
 <div id="inicio" class="tela">
-  <h1>Pane na Aurora</h1>
-  <p>A nave Aurora saiu da rota. Conserte os 4 sistemas em 6 minutos antes que ela exploda.</p>
-  <ul>
-    <li>Mova-se com as setas ou WASD.</li>
-    <li>Perto de uma porta, aperte E ou clique em Interagir.</li>
-    <li>Resolva o desafio lógico para abrir a porta e depois faça o reparo.</li>
-    <li>Com os 4 sistemas consertados, vá à sala de controle.</li>
-  </ul>
-  <button id="jogar">Jogar</button>
+  <div class="abertura">
+    <p class="sobretitulo">RELATÓRIO DE BORDO · NAVE AURORA</p>
+    <h1>Uma falha no vazio</h1>
+    <p class="lore">A Aurora voltava de uma missão de exploração quando uma tempestade de micrometeoritos atingiu o casco. O impacto apagou sistemas essenciais e tirou a nave da rota. Com os setores em protocolo de segurança, só a tripulação consegue reabrir as portas, restaurar os sistemas e alcançar a sala de controle.</p>
+    <p class="urgencia">O suporte de emergência vai aguentar por apenas seis minutos.</p>
+    <div class="instrucoes">
+      <b>Sua missão</b>
+      <span>Use WASD ou as setas para se mover. Perto de uma porta, pressione E ou clique no botão. Resolva o desafio lógico para liberar a porta e entrar na sala. Faça o reparo, conserte os quatro sistemas e confirme a rota no controle.</span>
+    </div>
+    <button id="jogar">Iniciar missão</button>
+  </div>
 </div>
 
 <div id="fim" class="tela" hidden>

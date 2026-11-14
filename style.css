@@ -1,45 +1,204 @@
-:root{--casco:#101a24;--piso:#172633;--painel:#213646;--texto:#e6edf2;--ambar:#f0a43a;--ciano:#4fc3d9;--verde:#5fd3a8;--vermelho:#e0543f}
-*{box-sizing:border-box}
-[hidden]{display:none!important}
-body{margin:0;min-height:100vh;background:var(--casco);color:var(--texto);font-family:"Trebuchet MS","Segoe UI",sans-serif;display:flex;flex-direction:column;align-items:center;padding:12px}
-button{font:inherit;background:var(--ciano);color:#07222b;border:0;border-radius:6px;padding:8px 14px;cursor:pointer}
-button:hover{filter:brightness(1.1)}
-button:focus-visible,input:focus-visible{outline:3px solid var(--ambar);outline-offset:2px}
+:root {
+  --casco: #080f19;
+  --piso: #101e2c;
+  --painel: #1a2d3e;
+  --texto: #e6edf2;
+  --ambar: #f0a43a;
+  --ciano: #4fc3d9;
+  --verde: #5fd3a8;
+  --vermelho: #e0543f;
+}
 
-#hud{display:flex;justify-content:space-between;width:900px;max-width:100%;font-size:1.3rem;margin-bottom:8px}
-#tempo{font-weight:bold;font-variant-numeric:tabular-nums}
-#tempo.critico{color:var(--vermelho)}
-#nave{position:relative;width:900px;height:500px;background:var(--piso);border:4px solid var(--painel);border-radius:40px;overflow:hidden}
-.sala{position:absolute;background:var(--painel);border:3px solid var(--ambar);border-radius:8px;padding:8px;display:flex;flex-direction:column;gap:4px}
-.sala small{opacity:.85}
-.sala.aberta{border-color:var(--ciano)}
-.sala.consertada{border-color:var(--verde);background:#1f4a45}
-.porta{position:absolute;left:50%;bottom:-6px;width:44px;height:10px;margin-left:-22px;background:var(--ambar);border-radius:3px}
-.aberta .porta{background:var(--ciano)}
-.consertada .porta{background:var(--verde)}
-.ctrl .porta{top:-6px;bottom:auto}
-#jogador{position:absolute;left:0;top:0;width:22px;height:22px;border-radius:50% 50% 6px 6px;background:var(--verde);border:3px solid #fff}
+* { box-sizing: border-box; }
+[hidden] { display: none !important; }
 
-#dica{position:fixed;bottom:20px;left:50%;transform:translateX(-50%);background:var(--ambar);font-size:1.1rem}
-#aviso{position:fixed;top:70px;left:50%;transform:translateX(-50%);background:var(--painel);border:2px solid var(--ambar);padding:10px 18px;border-radius:8px;z-index:5}
-#modal,.tela{position:fixed;inset:0;background:rgba(8,14,20,.92);display:flex;align-items:center;justify-content:center;z-index:10}
-.tela{flex-direction:column;text-align:center;gap:12px;padding:20px;z-index:20}
-.tela ul{text-align:left;max-width:420px}
-.caixa{background:var(--painel);border-radius:12px;padding:24px;width:min(560px,94vw);max-height:92vh;overflow:auto}
-.expr{font-size:2rem;text-align:center;margin:12px 0}
-.opcoes,.grade,.painel,.fios{display:flex;gap:10px;flex-wrap:wrap;justify-content:center;margin:12px 0}
-.grade button{width:56px;height:56px;font-size:1.3rem}
-.feito{background:var(--verde)!important}
-#mf.ok{color:var(--verde)}
-#mf.erro{color:var(--vermelho)}
+body {
+  margin: 0;
+  min-height: 100vh;
+  padding: 12px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  color: var(--texto);
+  background: radial-gradient(ellipse at 50% 40%, #152b3c 0%, var(--casco) 70%);
+  font-family: "Trebuchet MS", "Segoe UI", sans-serif;
+}
 
-.tanque{width:120px;height:180px;border:3px solid var(--texto);border-radius:8px;margin:0 auto;position:relative;overflow:hidden}
-#nivel{position:absolute;bottom:0;width:100%;background:var(--ambar);transition:height .2s}
-.fios>div{display:flex;flex-direction:column;gap:14px}
-.fio{width:90px;height:22px;border-radius:11px;cursor:grab}
-.conector{width:90px;height:22px;border:4px solid;border-radius:6px}
-.painel input{writing-mode:vertical-lr;direction:rtl;height:150px}
+button {
+  padding: 9px 16px;
+  border: 0;
+  border-radius: 6px;
+  color: #07222b;
+  background: var(--ciano);
+  font: inherit;
+  font-weight: 700;
+  cursor: pointer;
+  transition: filter .15s, transform .15s, box-shadow .15s;
+}
+button:hover { filter: brightness(1.1); transform: translateY(-1px); }
+button:focus-visible, input:focus-visible { outline: 3px solid var(--ambar); outline-offset: 2px; }
 
-.explode{animation:boom 1.5s forwards}
-@keyframes boom{0%{transform:none}20%{transform:translate(8px,-5px)}40%{transform:translate(-8px,5px)}60%{background:#fff}100%{background:var(--vermelho);opacity:.3;transform:scale(1.1)}}
-@media(prefers-reduced-motion:reduce){.explode{animation:none;opacity:.3}}
+#hud {
+  width: 900px;
+  max-width: 100%;
+  margin-bottom: 8px;
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  font-size: 1.1rem;
+}
+#tempo { font-weight: 800; font-variant-numeric: tabular-nums; }
+#tempo.critico { color: var(--vermelho); animation: alerta .8s infinite alternate; }
+
+#nave {
+  position: relative;
+  width: min(900px, calc(100vw - 24px));
+  aspect-ratio: 9 / 5;
+  overflow: hidden;
+  border: 4px solid #294357;
+  border-radius: 40px;
+  background-color: var(--piso);
+  background-image:
+    radial-gradient(circle at 12% 26%, #c5eaff 0 1px, transparent 1.5px),
+    radial-gradient(circle at 65% 68%, #c5eaff 0 1px, transparent 1.5px),
+    radial-gradient(circle at 84% 19%, #c5eaff 0 1px, transparent 1.5px),
+    linear-gradient(135deg, transparent 49.7%, #ffffff08 50%, transparent 50.3%);
+  background-size: 173px 149px, 211px 183px, 239px 167px, 100% 100%;
+  box-shadow: 0 18px 60px #0008, inset 0 0 70px #07121c;
+}
+#mapa { position: absolute; top: 0; left: 0; width: 900px; height: 500px; transform-origin: top left; }
+
+.sala {
+  position: absolute;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: 8px;
+  border: 3px solid var(--ambar);
+  border-radius: 8px;
+  background: linear-gradient(145deg, #263d50, var(--painel));
+  box-shadow: inset 0 0 18px #080f1966;
+  transition: border-color .25s, background .25s, box-shadow .25s;
+}
+.sala b { text-shadow: 0 1px 8px #000; }
+.sala small { opacity: .85; }
+.sala.aberta { border-color: var(--ciano); box-shadow: 0 0 18px #4fc3d944, inset 0 0 18px #080f1966; }
+.sala.consertada { border-color: var(--verde); background: linear-gradient(145deg, #23564d, #1f4a45); }
+.porta {
+  position: absolute;
+  left: 50%;
+  bottom: -6px;
+  width: 48px;
+  height: 10px;
+  margin-left: -24px;
+  border-radius: 3px;
+  background: var(--ambar);
+  box-shadow: 0 0 10px currentColor;
+}
+.aberta .porta { background: var(--ciano); animation: porta-liberada 1.4s infinite alternate; }
+.consertada .porta { background: var(--verde); }
+.ctrl .porta { top: -6px; bottom: auto; }
+
+#jogador {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 22px;
+  height: 22px;
+  border: 3px solid #fff;
+  border-radius: 50% 50% 6px 6px;
+  background: var(--verde);
+  box-shadow: 0 0 15px #5fd3a8aa;
+  transition: transform .045s linear;
+  z-index: 2;
+}
+
+#dica {
+  position: fixed;
+  bottom: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: var(--ambar);
+  font-size: 1.05rem;
+  box-shadow: 0 5px 22px #0008;
+  z-index: 4;
+}
+#dica:hover { transform: translateX(-50%) translateY(-1px); }
+#aviso {
+  position: fixed;
+  top: 70px;
+  left: 50%;
+  transform: translateX(-50%);
+  padding: 10px 18px;
+  border: 2px solid var(--ambar);
+  border-radius: 8px;
+  background: var(--painel);
+  box-shadow: 0 8px 30px #0009;
+  z-index: 5;
+}
+
+#modal, .tela {
+  position: fixed;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #080e14ed;
+  z-index: 10;
+}
+.tela { flex-direction: column; gap: 12px; padding: 20px; text-align: center; z-index: 20; }
+.abertura {
+  width: min(620px, 94vw);
+  padding: clamp(22px, 5vw, 42px);
+  border: 1px solid #4fc3d955;
+  border-radius: 18px;
+  background: linear-gradient(145deg, #142534f5, #0b1520f5);
+  box-shadow: 0 24px 80px #0009, inset 0 1px #ffffff12;
+  text-align: left;
+  animation: surgir .55s both;
+}
+.abertura h1 { margin: 4px 0 18px; font-size: clamp(2rem, 6vw, 3.4rem); line-height: 1; }
+.sobretitulo { margin: 0; color: var(--ciano); font-size: .76rem; font-weight: 800; letter-spacing: .16em; }
+.lore { color: #d3e0e9; line-height: 1.7; }
+.urgencia { color: var(--ambar); font-weight: 800; }
+.instrucoes { display: grid; gap: 7px; margin: 22px 0; padding: 14px 16px; border-left: 3px solid var(--ciano); background: #ffffff08; line-height: 1.55; }
+.abertura #jogar { width: 100%; padding: 12px 18px; background: var(--verde); }
+.caixa {
+  width: min(560px, 94vw);
+  max-height: 92vh;
+  overflow: auto;
+  padding: 24px;
+  border: 1px solid #ffffff16;
+  border-radius: 12px;
+  background: var(--painel);
+  box-shadow: 0 18px 60px #0009;
+}
+.expr { margin: 12px 0; font-size: 2rem; text-align: center; }
+.opcoes, .grade, .painel, .fios { display: flex; flex-wrap: wrap; justify-content: center; gap: 10px; margin: 12px 0; }
+.grade button { width: 56px; height: 56px; font-size: 1.3rem; }
+.feito { background: var(--verde) !important; }
+#mf.ok { color: var(--verde); }
+#mf.erro { color: var(--vermelho); }
+.tanque { position: relative; width: 120px; height: 180px; overflow: hidden; margin: 0 auto; border: 3px solid var(--texto); border-radius: 8px; }
+#nivel { position: absolute; bottom: 0; width: 100%; background: var(--ambar); transition: height .2s; }
+.fios > div { display: flex; flex-direction: column; gap: 14px; }
+.fio { width: 90px; height: 22px; border-radius: 11px; cursor: grab; }
+.conector { width: 90px; height: 22px; border: 4px solid; border-radius: 6px; }
+.painel input { height: 150px; writing-mode: vertical-lr; direction: rtl; }
+
+.explode { animation: boom 1.5s forwards; }
+@keyframes boom { 0% { transform: none; } 20% { transform: translate(8px, -5px); } 40% { transform: translate(-8px, 5px); } 60% { background: #fff; } 100% { transform: scale(1.1); background: var(--vermelho); opacity: .3; } }
+@keyframes porta-liberada { to { box-shadow: 0 0 18px #4fc3d9; } }
+@keyframes alerta { to { opacity: .55; } }
+@keyframes surgir { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: translateY(0); } }
+
+@media (max-width: 620px) {
+  body { padding: 8px; }
+  #hud { font-size: .88rem; }
+  #nave { width: calc(100vw - 16px); border-radius: 24px; }
+  .sala { padding: 5px; font-size: .75rem; }
+  .sala small { font-size: .65rem; }
+}
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation-duration: .01ms !important; animation-iteration-count: 1 !important; scroll-behavior: auto !important; }
+}

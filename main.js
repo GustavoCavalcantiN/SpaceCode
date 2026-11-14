@@ -11,19 +11,26 @@ function porta(i) { const [x, y, w, h] = POS[i]; return [x + w / 2, i < 4 ? y + 
 function iniciar() {
   Object.assign(S, { ativo: true, aberto: false, est: Array(5).fill('bloqueada'), x: 440, y: 250, fim: Date.now() + 360000 });
   const n = $('#nave');
-  n.className = ''; n.innerHTML = '';
+  n.className = ''; n.innerHTML = '<div id="mapa"></div>';
+  const mapa = $('#mapa');
   POS.forEach(([x, y, w, h], i) => {
     const s = document.createElement('div');
     s.id = 's' + i;
     s.style.cssText = `left:${x}px;top:${y}px;width:${w}px;height:${h}px`;
     s.innerHTML = `<b>${NOMES[i]}</b><small></small><i class="porta"></i>`;
-    n.appendChild(s);
+    mapa.appendChild(s);
   });
-  n.insertAdjacentHTML('beforeend', '<div id="jogador"></div>');
+  mapa.insertAdjacentHTML('beforeend', '<div id="jogador"></div>');
   ['#inicio', '#fim'].forEach(s => $(s).hidden = true);
   ['#hud', '#nave'].forEach(s => $(s).hidden = false);
+  ajustarMapa();
   pintar();
   requestAnimationFrame(loop);
+}
+
+function ajustarMapa() {
+  const mapa = $('#mapa'), nave = $('#nave');
+  if (mapa && nave) mapa.style.transform = `scale(${Math.min(nave.clientWidth / 900, nave.clientHeight / 500)})`;
 }
 
 // Atualiza cores das salas, textos de estado e o progresso. Libera o controle com 4 sistemas reparados.
@@ -55,33 +62,79 @@ function abrir(titulo, instrucao, monta) {
 }
 function fecharModal() { $('#modal').hidden = true; S.aberto = false; }
 
+// Índice da sala em que o jogador está (ou -1)
+function salaAtual() {
+  const cx = S.x + 11, cy = S.y + 11;
+  return POS.findIndex(([x, y, w, h]) => cx > x && cx < x + w && cy > y && cy < y + h);
+}
+
 // Índice da sala cuja porta está perto do jogador (ou -1)
 function perto() {
   const cx = S.x + 11, cy = S.y + 11;
   return POS.findIndex((_, i) => { const [px, py] = porta(i); return Math.hypot(cx - px, cy - py) < 55; });
 }
 
+function entrarSala(i) {
+  const [x, y, w, h] = POS[i];
+  S.x = x + w / 2 - 11;
+  S.y = i < 4 ? y + h - 34 : y + 12;
+  $('#jogador').style.transform = `translate(${S.x}px,${S.y}px)`;
+}
+
 function interagir() {
   if (!S.ativo || S.aberto) return;
-  const i = perto();
+  const dentro = salaAtual();
+  const i = dentro >= 0 ? dentro : perto();
   if (i < 0) return;
   const e = S.est[i];
   if (i === 4) {
     if (e !== 'aberta') return aviso('Conserte os 4 sistemas para liberar o controle.');
+    if (dentro !== 4) return aviso('A porta está liberada. Entre na sala de controle.');
     return abrir('Painel de navegação', 'Confirme a nova rota para retomar o rumo.', c => botao('Retomar o rumo', () => fim(true), c));
   }
-  if (e === 'consertada') return aviso('Este sistema já foi reparado.');
-  if (e === 'bloqueada') {
-    abrir('Porta: ' + NOMES[i], 'Resolva o desafio lógico para abrir a porta.', c =>
-      DESAFIOS[i](c, () => { S.est[i] = 'aberta'; fecharModal(); pintar(); aviso('Porta aberta. Interaja de novo para entrar.'); }));
-  } else {
-    abrir('Reparo: ' + NOMES[i], 'Complete a tarefa para consertar o sistema.', c =>
-      TAREFAS[i](c, () => { S.est[i] = 'consertada'; fecharModal(); pintar(); aviso('Sistema reparado!'); }));
+  if (dentro !== i) {
+    if (e === 'bloqueada') {
+      abrir('Porta: ' + NOMES[i], 'Resolva o desafio lógico para liberar a entrada.', c =>
+        DESAFIOS[i](c, () => { S.est[i] = 'aberta'; fecharModal(); pintar(); entrarSala(i); aviso('Porta liberada: você entrou na sala. Pressione E para reparar.'); }));
+    } else if (e === 'aberta') aviso('Atravesse a porta liberada para acessar o sistema.');
+    else aviso('Este sistema já foi reparado.');
+    return;
   }
+  if (e === 'consertada') return aviso('Este sistema já foi reparado.');
+  abrir('Reparo: ' + NOMES[i], 'Você está dentro da sala. Complete a tarefa para restaurar este sistema.', c =>
+    TAREFAS[i](c, () => { S.est[i] = 'consertada'; fecharModal(); pintar(); aviso('Sistema reparado!'); }));
 }
 
-// Movimento com colisão contra as salas
-function bate(x, y) { return POS.some(([a, b, w, h]) => x < a + w && x + 22 > a && y < b + h && y + 22 > b); }
+function dentroDaSala(i, x, y) {
+  const [a, b, w, h] = POS[i], cx = x + 11, cy = y + 11;
+  return cx > a && cx < a + w && cy > b && cy < b + h;
+}
+
+function naAbertura(i, x, y) {
+  const [px, py] = porta(i), [, b, , h] = POS[i];
+  const parede = i < 4 ? b + h : b, cy = y + 11;
+  return Math.abs(x + 11 - px) < 28 && Math.abs(cy - parede) < 23;
+}
+
+function atravessouPorta(i, x1, y1, x2, y2) {
+  const [px, py] = porta(i), [, b, , h] = POS[i];
+  const parede = i < 4 ? b + h : b;
+  const lado1 = y1 + 11 - parede, lado2 = y2 + 11 - parede;
+  return (lado1 <= 0 && lado2 >= 0 || lado1 >= 0 && lado2 <= 0) &&
+    lado1 !== lado2 && Math.abs((x1 + x2) / 2 + 11 - px) < 28;
+}
+
+// As salas liberadas podem ser atravessadas somente pela abertura da porta.
+function bate(x, y) {
+  return POS.some(([a, b, w, h], i) => {
+    if (!(x < a + w && x + 22 > a && y < b + h && y + 22 > b)) return false;
+    if (S.est[i] === 'aberta' || S.est[i] === 'consertada') {
+      if (dentroDaSala(i, S.x, S.y) && dentroDaSala(i, x, y)) return false;
+      if (naAbertura(i, x, y) || atravessouPorta(i, S.x, S.y, x, y)) return false;
+    }
+    return true;
+  });
+}
 function tentar(x, y) { if (x < 0 || y < 0 || x > 878 || y > 478 || bate(x, y)) return; S.x = x; S.y = y; }
 function mover() {
   const dx = (teclas.arrowright || teclas.d ? 1 : 0) - (teclas.arrowleft || teclas.a ? 1 : 0);
@@ -98,7 +151,14 @@ function loop() {
   $('#tempo').classList.toggle('critico', r < 60000);
   if (r === 0) return fim(false);
   if (!S.aberto) mover();
-  $('#dica').hidden = S.aberto || perto() < 0;
+  const dentro = salaAtual(), proximidade = perto();
+  $('#dica').hidden = S.aberto || (dentro < 0 && proximidade < 0);
+  if (!$('#dica').hidden) {
+    const i = dentro >= 0 ? dentro : proximidade;
+    $('#dica').textContent = dentro >= 0
+      ? (i === 4 ? 'Painel de navegação (E)' : S.est[i] === 'consertada' ? 'Sistema reparado' : 'Reparar sistema (E)')
+      : S.est[i] === 'bloqueada' ? 'Desafio da porta (E)' : 'Entrar na sala (E)';
+  }
   requestAnimationFrame(loop);
 }
 
@@ -122,6 +182,7 @@ document.addEventListener('keydown', e => {
   if ((k === 'e' || k === 'enter') && !e.repeat) interagir();
 });
 document.addEventListener('keyup', e => delete teclas[e.key.toLowerCase()]);
+window.addEventListener('resize', ajustarMapa);
 $('#dica').onclick = interagir;
 $('#fechar').onclick = fecharModal;
 $('#jogar').onclick = $('#denovo').onclick = iniciar;
