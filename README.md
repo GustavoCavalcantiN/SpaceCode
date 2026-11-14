@@ -8,14 +8,6 @@ Jogo 2D de aventura e reparo feito em HTML, CSS e JavaScript para a disciplina d
 - [Repositório do jogo no GitHub](https://github.com/GustavoCavalcantiN/SpaceCode)
 - [Arquivo principal do jogo](https://github.com/GustavoCavalcantiN/SpaceCode/blob/main/index.html)
 
-O jogo ainda não tem uma página pública. Para abrir pelo navegador sem aparecer como arquivo local:
-
-1. No VS Code, abra `index.html`.
-2. Clique em **Go Live** na barra inferior para iniciar o Live Server.
-3. Abra [http://127.0.0.1:5500/index.html](http://127.0.0.1:5500/index.html) no Chrome. O Live Server normalmente também abre a página automaticamente.
-
-O endereço `127.0.0.1` aponta para o próprio computador: só funciona nele e enquanto o Live Server estiver ligado. Para compartilhar o jogo com outras pessoas pela internet, será necessário publicá-lo em um serviço de hospedagem estática.
-
 ## História
 
 A nave Aurora está voltando de uma missão de exploração quando atravessa uma tempestade de micrometeoritos. O impacto danifica sistemas essenciais, desvia a nave da rota e ativa o protocolo de segurança: as portas dos setores são bloqueadas para evitar novas falhas.
