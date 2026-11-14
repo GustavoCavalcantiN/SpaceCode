@@ -4,7 +4,7 @@ Jogo 2D de aventura e reparo feito em HTML, CSS e JavaScript para a disciplina d
 
 ## Jogue e acesse o projeto
 
-- [Abrir o jogo no navegador](http://127.0.0.1:5500/index.html) — endereço local; funciona enquanto o Live Server estiver ligado no seu computador.
+- [Link do jogo](http://127.0.0.1:5500/index.html) 
 - [Repositório do jogo no GitHub](https://github.com/GustavoCavalcantiN/SpaceCode)
 - [Arquivo principal do jogo](https://github.com/GustavoCavalcantiN/SpaceCode/blob/main/index.html)
 
