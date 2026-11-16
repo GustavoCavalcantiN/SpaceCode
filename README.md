@@ -18,7 +18,7 @@ Quando os quatro sistemas estiverem funcionando, a sala de controle será libera
 
 ## Como jogar
 
-1. Pressione **Iniciar missão**. O cronômetro de seis minutos começa junto com a partida.
+1. Pressione **Iniciar missão**. O cronômetro de quatro minutos começa junto com a partida.
 2. Mova-se pela nave usando **WASD** ou as **setas**.
 3. Aproxime-se de uma porta e pressione **E** ou clique no botão de interação.
 4. Resolva o desafio lógico. Ao acertar, você entra na sala automaticamente.

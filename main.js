@@ -9,7 +9,7 @@ const $ = s => document.querySelector(s);
 function porta(i) { const [x, y, w, h] = POS[i]; return [x + w / 2, i < 4 ? y + h : y]; }
 
 function iniciar() {
-  Object.assign(S, { ativo: true, aberto: false, est: Array(5).fill('bloqueada'), x: 440, y: 250, fim: Date.now() + 360000 });
+  Object.assign(S, { ativo: true, aberto: false, est: Array(5).fill('bloqueada'), x: 440, y: 250, fim: Date.now() + 240000 });
   const n = $('#nave');
   n.className = ''; n.innerHTML = '<div id="mapa"></div>';
   const mapa = $('#mapa');
