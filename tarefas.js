@@ -108,12 +108,22 @@ const TAREFAS_ATLAS = [
   },
   (c, ok) => {
     const alvos = [Math.floor(Math.random() * 61) + 20, Math.floor(Math.random() * 61) + 20];
-    c.innerHTML = '<p>Ajuste as duas frequências até os valores exibidos e sincronize.</p><div class="opcoes"><label>Canal A: <b>' + alvos[0] + '</b><input id="canal-a" type="range" min="0" max="100" value="0"></label><label>Canal B: <b>' + alvos[1] + '</b><input id="canal-b" type="range" min="0" max="100" value="0"></label></div>';
+    c.innerHTML = '<p>Ajuste cada controle para chegar ao alvo. O valor atual aparece logo abaixo. Aceitamos uma diferença máxima de 5 MHz.</p><div class="frequencias"><label class="canal"><span>Canal A · alvo <b>' + alvos[0] + ' MHz</b></span><input id="canal-a" type="range" min="0" max="100" value="0"><small>Atual: <output id="atual-a">0</output> MHz</small></label><label class="canal"><span>Canal B · alvo <b>' + alvos[1] + ' MHz</b></span><input id="canal-b" type="range" min="0" max="100" value="0"><small>Atual: <output id="atual-b">0</output> MHz</small></label></div><p id="sinal-status" class="sinal-status">Ajuste os dois canais para sincronizar.</p>';
     ilustrar(c, 'comunicacoes');
-    botao('Sincronizar', () => { const a = +c.querySelector('#canal-a').value, b = +c.querySelector('#canal-b').value; if (Math.abs(a-alvos[0]) <= 3 && Math.abs(b-alvos[1]) <= 3) ok(); else feedback('Os canais ainda estão fora da frequência. Ajuste e tente de novo.', false); }, c);
+    const canais = [c.querySelector('#canal-a'), c.querySelector('#canal-b')];
+    const atualizar = () => {
+      const valores = canais.map((input, i) => +input.value);
+      valores.forEach((valor, i) => { c.querySelector(`#atual-${i ? 'b' : 'a'}`).value = valor; });
+      const certo = valores.every((valor, i) => Math.abs(valor - alvos[i]) <= 5);
+      c.querySelector('#sinal-status').textContent = certo ? 'Sinal alinhado! Pode sincronizar.' : 'Ainda fora do alvo: ajuste os controles até a diferença ficar em 5 MHz ou menos.';
+      c.querySelector('#sinal-status').classList.toggle('alinhado', certo);
+      return certo;
+    };
+    canais.forEach(input => input.addEventListener('input', atualizar));
+    botao('Sincronizar', () => { if (atualizar()) ok(); else feedback('Confira o valor atual de cada canal e aproxime-o do alvo (diferença máxima: 5 MHz).', false); }, c);
   },
   (c, ok) => {
-    c.innerHTML = '<p>Calibre o radar clicando nos setores na ordem sinalizada.</p><p class="expr">Noroeste → Sudeste → Norte</p><div class="grade" id="setores"></div><p id="radar-status"></p>';
+    c.innerHTML = '<p>Clique nos setores nesta ordem. Se errar, a sequência recomeça.</p><p class="expr">Noroeste → Sudeste → Norte</p><div class="grade setores-grade" id="setores"></div><p id="radar-status"></p>';
     ilustrar(c, 'sensores');
     const ordem = [0, 3, 1]; let passo = 0;
     ['Noroeste', 'Norte', 'Sul', 'Sudeste'].forEach((nome, i) => botao(nome, () => {
