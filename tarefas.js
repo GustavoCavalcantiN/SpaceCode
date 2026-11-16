@@ -73,3 +73,36 @@ const TAREFAS = [
     });
   }
 ];
+
+// Reparos da segunda nave, com mecânicas diferentes das tarefas da Aurora.
+const TAREFAS_ATLAS = [
+  (c, ok) => {
+    c.innerHTML = '<p>Ative os quatro estabilizadores na sequência indicada.</p><p class="expr" id="seq-alvo"></p><div class="opcoes" id="seq-botoes"></div><p id="seq-status"></p>';
+    const ordem = [0, 1, 2, 3].sort(() => Math.random() - .5), cores = ['Vermelho', 'Azul', 'Amarelo', 'Verde'];
+    c.querySelector('#seq-alvo').textContent = ordem.map(i => cores[i]).join(' → ');
+    let passo = 0;
+    ordem.forEach((_, i) => botao(cores[i], () => {
+      if (i === ordem[passo]) { passo++; c.querySelector('#seq-status').textContent = `Estabilizadores: ${passo}/4`; if (passo === 4) ok(); }
+      else { passo = 0; c.querySelector('#seq-status').textContent = 'Sequência errada. Recomece do primeiro.'; }
+    }, c.querySelector('#seq-botoes')));
+  },
+  (c, ok) => {
+    const alvos = [Math.floor(Math.random() * 61) + 20, Math.floor(Math.random() * 61) + 20];
+    c.innerHTML = '<p>Ajuste as duas frequências até os valores exibidos e sincronize.</p><div class="opcoes"><label>Canal A: <b>' + alvos[0] + '</b><input id="canal-a" type="range" min="0" max="100" value="0"></label><label>Canal B: <b>' + alvos[1] + '</b><input id="canal-b" type="range" min="0" max="100" value="0"></label></div>';
+    botao('Sincronizar', () => { const a = +c.querySelector('#canal-a').value, b = +c.querySelector('#canal-b').value; if (Math.abs(a-alvos[0]) <= 3 && Math.abs(b-alvos[1]) <= 3) ok(); else feedback('Os canais ainda estão fora da frequência. Ajuste e tente de novo.', false); }, c);
+  },
+  (c, ok) => {
+    c.innerHTML = '<p>Calibre o radar clicando nos setores na ordem sinalizada.</p><p class="expr">Noroeste → Sudeste → Norte</p><div class="grade" id="setores"></div><p id="radar-status"></p>';
+    const ordem = [0, 3, 1]; let passo = 0;
+    ['Noroeste', 'Norte', 'Sul', 'Sudeste'].forEach((nome, i) => botao(nome, () => {
+      if (i === ordem[passo]) { passo++; c.querySelector('#radar-status').textContent = `Setores calibrados: ${passo}/3`; if (passo === ordem.length) ok(); }
+      else { passo = 0; c.querySelector('#radar-status').textContent = 'Leitura perdida. Recomece a sequência.'; }
+    }, c.querySelector('#setores')));
+  },
+  (c, ok) => {
+    c.innerHTML = '<p>Estabilize o reator entre 55 e 85 e confirme a potência.</p><input id="potencia" type="range" min="0" max="100" value="0"><p>Potência: <b id="potencia-num">0%</b></p>';
+    const slider = c.querySelector('#potencia');
+    slider.oninput = () => c.querySelector('#potencia-num').textContent = slider.value + '%';
+    botao('Estabilizar reator', () => { const n = +slider.value; if (n >= 55 && n <= 85) ok(); else feedback('Potência fora da faixa segura (55%–85%).', false); }, c);
+  }
+];

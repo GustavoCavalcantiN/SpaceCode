@@ -7,7 +7,10 @@
 <link rel="stylesheet" href="style.css">
 </head>
 <body>
-<div id="hud" hidden><span id="tempo">06:00</span><span id="prog">Sistemas reparados: 0/4</span></div>
+<div id="hud" hidden>
+  <div class="hud-dados"><b id="nave-titulo">Nave Aurora</b><span id="tempo">04:00</span><span id="prog">Sistemas reparados: 0/4</span></div>
+  <div class="hud-fogo"><span>Incêndio</span><div class="barra-fogo"><i id="fogo-nivel"></i></div><b id="fogo-pct">0%</b></div>
+</div>
 <div id="nave" hidden><div id="mapa"></div></div>
 <button id="dica" hidden>Interagir (E)</button>
 <div id="aviso" hidden></div>
@@ -22,13 +25,13 @@
 
 <div id="inicio" class="tela">
   <div class="abertura">
-    <p class="sobretitulo">RELATÓRIO DE BORDO · NAVE AURORA</p>
+    <p class="sobretitulo">RELATÓRIO DE BORDO · MISSÃO AURORA</p>
     <h1>Uma falha no vazio</h1>
-    <p class="lore">A Aurora voltava de uma missão de exploração quando uma tempestade de micrometeoritos atingiu o casco. O impacto apagou sistemas essenciais e tirou a nave da rota. Com os setores em protocolo de segurança, só a tripulação consegue reabrir as portas, restaurar os sistemas e alcançar a sala de controle.</p>
-    <p class="urgencia">O suporte de emergência vai aguentar por apenas seis minutos.</p>
+    <p class="lore">A tempestade de micrometeoritos danificou a nave Aurora e deixou a tripulação fora de rota. Quatro sistemas precisam ser reparados para liberar a ponte de acoplamento até a nave Atlas, também atingida pela pane. Lá, novos desafios aguardam antes que as duas naves percam o controle.</p>
+    <p class="urgencia">O incêndio se espalha enquanto o suporte de emergência dura apenas quatro minutos.</p>
     <div class="instrucoes">
       <b>Sua missão</b>
-      <span>Use WASD ou as setas para se mover. Perto de uma porta, pressione E ou clique no botão. Resolva o desafio lógico para liberar a porta e entrar na sala. Faça o reparo, conserte os quatro sistemas e confirme a rota no controle.</span>
+      <span>Use WASD ou as setas para se mover. Resolva a lógica da porta para entrar e reparar cada sistema. Se errar, vá a outra sala e acerte o desafio dela antes de voltar. Repare a Aurora, atravesse a ponte e conclua os reparos da Atlas. Evite as chamas e confirme a rota no controle central.</span>
     </div>
     <button id="jogar">Iniciar missão</button>
   </div>
