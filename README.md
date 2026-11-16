@@ -4,7 +4,7 @@ Aventura 2D de ficção científica feita em HTML, CSS e JavaScript para a disci
 
 ## Acesse o jogo
 
-- [Abrir o jogo publicado](https://gustavocavalcantin.github.io/SpaceCode/)
+- [Abrir o jogo publicado](http://127.0.0.1:5500/index.html)
 - [Repositório no GitHub](https://github.com/GustavoCavalcantiN/SpaceCode)
 
 O link publicado depende do GitHub Pages estar ativado nas configurações do repositório. Para jogar localmente, abra a pasta no VS Code e inicie o Live Server no `index.html`; o endereço local só funciona enquanto o servidor estiver ligado.
