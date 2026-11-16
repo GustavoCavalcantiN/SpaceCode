@@ -1,7 +1,7 @@
 // Funções de apoio, usadas também em tarefas.js e main.js
 function div(cls, pai) { const d = document.createElement('div'); d.className = cls; pai.appendChild(d); return d; }
 function botao(txt, fn, pai) { const b = document.createElement('button'); b.textContent = txt; b.onclick = fn; pai.appendChild(b); return b; }
-function feedback(t, bom) { const f = document.getElementById('mf'); f.textContent = t; f.className = bom ? 'ok' : 'erro'; if (!bom && window.S && S.aberto && S.tipoModal === 'desafio') erroDesafio(); }
+function feedback(t, bom) { const f = document.getElementById('mf'); f.textContent = t; f.className = bom ? 'ok' : 'erro'; if (!bom && typeof S !== 'undefined' && S.aberto && S.tipoModal === 'desafio') erroDesafio(); }
 function opcoes(c, lista, certa, dica, ok) {
   const g = div('opcoes', c);
   lista.slice().sort(() => Math.random() - 0.5).forEach(t => botao(t, () => t === certa ? ok() : feedback(dica, false), g));

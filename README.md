@@ -17,14 +17,14 @@ Com a Aurora reparada, a sala de acoplamento libera uma ponte para a nave Atlas,
 
 ## Como jogar
 
-1. Pressione **Iniciar missão**. O cronômetro de quatro minutos começa e vale para as duas naves.
+1. Pressione **Iniciar missão**. O cronômetro de quatro minutos começa e segue contando nas duas naves. O progresso acompanha os oito sistemas no total (por exemplo, 4/8 ao chegar à Atlas).
 2. Mova-se com **WASD** ou as **setas** e pressione **E** perto de uma porta.
 3. Resolva o desafio para liberar a sala e, já dentro dela, pressione **E** para iniciar o reparo.
 4. Se errar um desafio de porta, visite outra sala e resolva corretamente o desafio dela. Só então poderá retornar à porta pendente.
 5. Repare os quatro sistemas da Aurora, libere a ponte e atravesse para a Atlas.
 6. Repare os quatro sistemas da Atlas e confirme a rota no controle central.
 
-As chamas crescem com o tempo e causam perda de segundos quando atingem o jogador. É possível fechar uma tela com **Esc**; reparos já concluídos permanecem. Se o tempo acabar, a nave explode e a partida pode ser reiniciada.
+As chamas surgem em vários setores, espalham-se e aceleram com o tempo. Tocá-las reduz o tempo restante; o cronômetro não reinicia ao trocar de nave. É possível fechar uma tela com **Esc**; reparos já concluídos permanecem. Se o tempo acabar, a nave explode e a partida pode ser reiniciada.
 
 ## Salas e desafios
 

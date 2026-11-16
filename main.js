@@ -8,12 +8,12 @@ const POS = [[20, 20, 190, 110], [245, 20, 190, 110], [470, 20, 190, 110], [695,
 const S = {}, teclas = [];
 const $ = s => document.querySelector(s);
 function porta(i) { const [x, y, w, h] = POS[i]; return [x + w / 2, i < 4 ? y + h : y]; }
-function estados() { return S.fases[S.fase]; }
+function estados() { return S.fases[S.fase - 1]; }
 function nomes() { return NOMES[S.fase - 1]; }
 
 function iniciar() {
   Object.assign(S, { ativo: true, aberto: false, fase: 1, ponte: false, pendente: null,
-    fases: [Array(5).fill('bloqueada'), Array(5).fill('bloqueada')], x: 440, y: 250,
+    fases: [Array(5).fill('bloqueada'), Array(5).fill('bloqueada')], x: 440, y: 250, jogadores: [{ x: 440, y: 250 }, { x: 150, y: 250 }],
     inicio: Date.now(), fim: Date.now() + 240000, ultimoDano: 0, modoQuiz: 'normal' });
   construirMapa();
   ['#inicio', '#fim'].forEach(s => $(s).hidden = true);
@@ -26,13 +26,14 @@ function construirMapa() {
   const nave = $('#nave'); nave.innerHTML = '<div id="mapa"></div>';
   const mapa = $('#mapa');
   POS.forEach(([x, y, w, h], i) => {
-    const el = document.createElement('div'); el.id = 's' + i;
+    const el = document.createElement('div'); el.id = 's' + i; el.className = 'sala bloqueada' + (i === 4 ? ' ctrl' : '');
     el.style.cssText = `left:${x}px;top:${y}px;width:${w}px;height:${h}px`;
     el.innerHTML = `<b>${nomes()[i]}</b><small></small><i class="porta"></i>`; mapa.appendChild(el);
   });
-  mapa.insertAdjacentHTML('beforeend', '<div id="ponte"><b>PONTE DE ACOPLAMENTO</b><small>Pressione E para atravessar</small></div><div id="incendio"><span>🔥</span></div><div id="jogador"></div>');
+  mapa.insertAdjacentHTML('beforeend', '<div id="ponte"><b>PONTE DE ACOPLAMENTO</b><small>Pressione E para atravessar</small></div><div id="incendios"></div><div id="jogador"></div>');
   $('#ponte').style.left = S.fase === 1 ? '784px' : '0px';
-  S.x = S.fase === 1 ? 440 : 100; S.y = 250;
+  S.x = S.jogadores[S.fase - 1].x; S.y = S.jogadores[S.fase - 1].y;
+  $('#incendios').innerHTML = Array.from({ length: 8 }, (_, i) => `<div class="incendio" data-fogo="${i}">🔥</div>`).join('');
   $('#nave-titulo').textContent = `Nave ${NAVES[S.fase - 1]} · Fase ${S.fase}/2`;
   ajustarMapa(); pintar();
 }
@@ -41,8 +42,8 @@ function ajustarMapa() { const m = $('#mapa'), n = $('#nave'); if (m && n) m.sty
 function pintar() {
   const est = estados();
   est.forEach((e, i) => { const s = $('#s' + i); s.className = 'sala ' + e + (i === 4 ? ' ctrl' : ''); s.querySelector('small').textContent = TXT[e]; });
-  const n = est.slice(0, 4).filter(e => e === 'consertada').length;
-  $('#prog').textContent = `Sistemas reparados: ${n}/4`;
+  const n = S.fases.reduce((total, fase) => total + fase.slice(0, 4).filter(e => e === 'consertada').length, 0);
+  $('#prog').textContent = `Sistemas reparados: ${n}/8`;
   $('#ponte').classList.toggle('liberada', S.ponte);
   if (n === 4 && est[4] === 'bloqueada') { est[4] = 'aberta'; pintar(); }
 }
@@ -79,6 +80,7 @@ function interagir() {
   if (!S.ativo || S.aberto) return;
   if (pertoPonte()) {
     if (S.fase === 1 && !S.ponte) return aviso('Conserte os quatro sistemas e libere o acoplamento para abrir a ponte.');
+    S.jogadores[S.fase - 1] = { x: S.x, y: S.y };
     S.fase = S.fase === 1 ? 2 : 1; construirMapa(); aviso(`Você chegou à nave ${NAVES[S.fase - 1]}.`); return;
   }
   const dentro = salaAtual(), i = dentro >= 0 ? dentro : perto(); if (i < 0) return;
@@ -125,15 +127,26 @@ function tentar(x, y) { if (x < 0 || y < 0 || x > 878 || y > 478 || bate(x, y)) 
 function mover() {
   const dx = (teclas.arrowright || teclas.d ? 1 : 0) - (teclas.arrowleft || teclas.a ? 1 : 0), dy = (teclas.arrowdown || teclas.s ? 1 : 0) - (teclas.arrowup || teclas.w ? 1 : 0);
   tentar(S.x + dx * 3, S.y); tentar(S.x, S.y + dy * 3); $('#jogador').style.transform = `translate(${S.x}px,${S.y}px)`;
+  S.jogadores[S.fase - 1] = { x: S.x, y: S.y };
 }
 function atualizarFogo(agora, restante) {
   const pct = Math.min(100, Math.floor((1 - restante / 240000) * 100));
   $('#fogo-nivel').style.width = pct + '%'; $('#fogo-pct').textContent = pct + '%';
-  const fogo = $('#incendio'), tamanho = 54 + pct * 2.1;
-  fogo.style.width = tamanho + 'px'; fogo.style.height = (34 + pct * .72) + 'px'; fogo.style.opacity = .48 + pct / 200;
-  fogo.style.left = (423 - tamanho / 2) + 'px'; fogo.style.top = (250 - (34 + pct * .72) / 2) + 'px';
-  if (pct >= 20 && S.x + 22 > 423 - tamanho / 2 && S.x < 423 + tamanho / 2 && S.y + 22 > 250 - (34 + pct * .72) / 2 && S.y < 250 + (34 + pct * .72) / 2 && agora - S.ultimoDano > 1800) {
-    S.fim -= 7000; S.ultimoDano = agora; aviso('As chamas atingiram você! 7 segundos foram perdidos.');
+  const focos = [[430, 250], [185, 250], [675, 250], [310, 190], [590, 340], [150, 355], [770, 355], [420, 410]];
+  let atingido = false;
+  focos.forEach(([cx, cy], i) => {
+    const inicio = i === 0 ? 0 : i * .085;
+    const etapa = Math.max(0, Math.min(1, (pct / 100 - inicio) / (1 - inicio)));
+    const tamanho = etapa ? 18 + 105 * etapa * etapa : 0;
+    const fogo = $(`[data-fogo="${i}"]`);
+    fogo.style.width = tamanho + 'px'; fogo.style.height = (tamanho * .72) + 'px';
+    fogo.style.left = (cx - tamanho / 2) + 'px'; fogo.style.top = (cy - tamanho * .36) + 'px';
+    fogo.style.opacity = etapa ? .48 + etapa * .52 : 0;
+    if (etapa > 0 && S.x + 22 > cx - tamanho / 2 && S.x < cx + tamanho / 2 && S.y + 22 > cy - tamanho * .36 && S.y < cy + tamanho * .36) atingido = true;
+  });
+  const intervalo = 2800 - pct * 19, penalidade = 3000 + pct * 90;
+  if (atingido && agora - S.ultimoDano > intervalo) {
+    S.fim -= penalidade; S.ultimoDano = agora; aviso(`As chamas atingiram você! ${Math.ceil(penalidade / 1000)} segundos perdidos.`);
   }
 }
 function loop() {
